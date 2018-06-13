@@ -7,6 +7,9 @@
   color: rgb(145, 145, 145);
   font-size: small;
 }
+.hide {
+  display: none;
+}
 
 /* #marketStatusIndicator {
   font-size: small;
@@ -87,7 +90,7 @@
   background: #4267b2;
   text-align: center;
   /* height: 50px; */
-  padding: .25em 0 .25em 0
+  padding: .5em 0 .5em 0
 }
 
 .inline-header {
@@ -115,6 +118,11 @@
   /* margin: 0 auto; */
 }
 
+.main-menu {
+  display: inline-block;
+  margin-right: 5em;
+}
+
 .w-min-50px {
   /* width: 50px; */
   width: 50px;
@@ -127,6 +135,10 @@
   max-width: 75%;
 }
 
+#dropdownMenuButton {
+  /* height: 1.57em; */
+}
+
 .news-feed, .news-feed * {
   table-layout: fixed;
   text-overflow:ellipsis;
@@ -134,8 +146,10 @@
   overflow: hidden;
 }
 
-/* #newsArticleInsertPoint tr td  {
-} */
+.data-box {
+  width: 100%;
+  height: 6em;
+}
 
 .scroll-container {
   overflow-x: scroll;
@@ -170,6 +184,10 @@
 
 .float-r {
   float: right;
+}
+
+.float-l {
+  float: left;
 }
 
 ::-webkit-scrollbar {

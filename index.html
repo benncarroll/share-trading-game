@@ -65,6 +65,22 @@
         Carroll's Trading Game
       </h3>
     </a>
+
+    <div class="dropdown float-l ml-3">
+      <button class="btn btn-sm btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        MENU
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="javascript:void(0)">Add Share</a>
+        <a class="dropdown-item" href="javascript:void(0)">Remove Share</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="javascript:exportSaveData()">Export Data</a>
+        <a class="dropdown-item" href="javascript:importSaveData(0)">Import Data</a>
+        <!-- <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="javascript:void(0)"></a> -->
+      </div>
+    </div>
+
   </div>
 
   <div class="main-content h-100">
@@ -170,14 +186,15 @@
         </div>
 
         <!-- Modal body -->
-        <div class="modal-body" id=modifiableModal-body>
-          Modal body..
+        <div class="modal-body" >
+          <div id="modifiableModal-body"></div>
+          <br>
+          <textarea id="modifiableModal-dataInput" class="hide data-box"></textarea>
         </div>
-
         <!-- Modal footer -->
         <div class="modal-footer">
           <span id="modifiableModal-footer"></span>
-          <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+          <button id="modifiableModal-button" type="button" class="btn btn-success" data-dismiss="modal">Close</button>
         </div>
 
       </div>

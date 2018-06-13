@@ -73,7 +73,7 @@ class StockClass {
     }
   }
 
-  fetchPrice(rl=false) {
+  fetchPrice(rl = false) {
     if (this.__key != "") {
       var b = this.__checkInterval
       if (this.__price == 0) {
@@ -330,7 +330,7 @@ function loadNewAlphaData() {
       stockData[l[ind]].fetchPrice()
       ind++;
     }, (c))
-    c += 300
+    c += 500
   }
   ind = 0
   // debugger;
@@ -485,7 +485,7 @@ function saveUserData() {
       closePrices: {}
     }
   } else {
-    craftedStorage = JSON.parse(localStorage.getItem('userData'))
+    craftedStorage = JSON.parse(Base64.decode(localStorage.getItem('userData')))
   }
 
   craftedStorage.userCash = Number(wallet.cash)
@@ -513,7 +513,7 @@ function saveUserData() {
 
   craftedStorage.cs = cs
 
-  localStorage.setItem('userData', JSON.stringify(craftedStorage))
+  localStorage.setItem('userData', Base64.encode(JSON.stringify(craftedStorage)))
 
   // doLog("Save completed.");
 
@@ -527,17 +527,10 @@ function loadUserData() {
     saveUserData()
   }
 
-  userData = JSON.parse(localStorage.getItem('userData'))
+  userData = JSON.parse(Base64.decode(localStorage.getItem('userData')))
 
   // Gen checksum
-  cs = Number(userData.userCash)
-  cs *= Number(userData.timeStarted)
-  for (var stock in userData.userStocks) {
-    if (userData.userStocks.hasOwnProperty(stock)) {
-      ss = userData.userStocks[stock]
-      cs += (Number(ss.ownedQuantity) * 3)
-    }
-  }
+  cs = genChecksum(userData)
 
   if (cs != Number(userData.cs)) {
     doLog("Checksum invalid - Setting values to 0.");
@@ -576,5 +569,35 @@ function resetUserData(i) {
   localStorage.removeItem("userData");
   if (!i) {
     location.reload()
+  }
+}
+
+function exportSaveData() {
+  saveUserData()
+  d = localStorage.getItem("userData")
+
+  c = `Below is your data in encoded format. By default, this is saved and update within your browser. If you would like to transfer your progress to another computer or browser, you will need to copy the code below and visit the 'Import Data' menu item from your new device.
+  <br><br>
+  <textarea class="data-box" readonly>${d}</textarea>`
+
+  summonModal('Export Data', c, false)
+}
+
+function importSaveData(f, d) {
+  if (f == 0) {
+    c = `Here is where you can import data from a previous game. Paste your exported data from another browser into the box below and click 'Load'.`
+    summonModal("Import Data", c , true, "Load")
+  } else if (f == 1) {
+    console.log(f, d);
+    d2 = JSON.parse(Base64.decode(d))
+    cs = genChecksum(d2)
+    if (cs != Number(d2.cs)) {
+      summonModal("Data import failed.", "The data file you attempted to upload was corrupted, and was not loaded. Please ensure all characters of the data code were copied correctly.")
+    } else {
+      localStorage.setItem("userData", d)
+      summonModal("Data import complete!", "Your data has successfully been imported.")
+      loadUserData()
+      populateStockTable()
+    }
   }
 }

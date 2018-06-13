@@ -13,6 +13,7 @@ var chartRendered = false;
 var stop = false
 var allowQueries = true;
 
+
 var wallet = new class {
   constructor() {
     this.__cash = 5000
@@ -71,44 +72,9 @@ function checkUser() {
 
 $(document).ready(function() {
 
-  // $('#stockInfoInsertPoint').on('click', '.buySellButton', function(e) {
-  //
-  //   btn = $(e["currentTarget"])
-  //   stockName = btn.attr("data-stock")
-  //   actionName = btn.attr("data-type")
-  //   textArea = $("[data-stock=" + stockName + "][data-type=" + actionName + "Qty]")
-  //
-  //   stockData[stockName].tradeShares(textArea.val(), actionName)
-  //
-  //   textArea.empty()
-  //
-  // })
-
-  // $('.buySellButton').on("click", function(e) {
-  //   btn = $(e["currentTarget"])
-  //   stockName = btn.attr("data-stock")
-  //   actionName = btn.attr("data-type")
-  //   textArea = $("[data-stock=" + stockName + "][data-type=" + actionName + "Qty]")
-  //
-  //   stockData[stockName].tradeShares(textArea.val(), actionName)
-  //
-  //   textArea.empty()
-  // })
-  //
-  // $('.buySell').on("keypress", function(e) {
-  //   if (e.which == 13) {
-  //
-  //     textArea = $(e["currentTarget"])
-  //     stockName = textArea.attr("data-stock")
-  //     actionName = textArea.attr("data-type2")
-  //
-  //     stockData[stockName].tradeShares(textArea.val(), actionName)
-  //
-  //
-  //     textArea.empty()
-  //
-  //   }
-  // });
+  // Test vars
+  // allowQueries = false
+  // $("#loading").hide()
 
   $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
     // doLog(settings.url)
@@ -186,7 +152,23 @@ function main() {
       }
     }
 
-    if (dataUpdates >= Object.keys(stockData).length && sheetsDataLoaded) {
+    nzc=false
+    nzCount=0
+    if (!initialDataLoaded) {
+      for (var s in stockData) {
+        if (stockData.hasOwnProperty(s)) {
+          s=stockData[s]
+          if (s.price != 0) {
+            nzCount += 1
+          }
+        }
+      }
+      if (nzCount >= Object.keys(stockData).length) {
+        nzc = true;
+      }
+    }
+
+    if ((dataUpdates >= Object.keys(stockData).length && sheetsDataLoaded) || (nzc && sheetsDataLoaded)) {
       dataUpdates = 0
       doLog("Data refresh completed.");
       $("#loading-reason").text("Done!")
