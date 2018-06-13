@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="ie=edge" http-equiv="X-UA-Compatible">
+
+
+  <!-- JQuery & Popper - base libraries used in plugins-->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+
+  <!-- Bootstrap - for styling and layout -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+
+  <!-- Font Awesome - for icons -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+
+  <!-- CanvasJS - used for making the chart -->
+  <script src="lib/canvasjs-non-commercial-2.0/jquery.canvasjs.min.js" charset="utf-8"></script>
+
+
+  <!-- Tabletop.js - for integrating Google Sheets data -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.2/tabletop.min.js" charset="utf-8"></script>
+
+  <!-- Moment.js - for timezones, etc -->
+  <!-- <script src="lib/moment/moment.js" charset="utf-8"></script>
+  <script src="lib/moment/moment-timezone.js" charset="utf-8"></script> -->
+
+  <!-- My own custom CSS File -->
+  <link href="css/main.css" rel="stylesheet">
+
+  <!-- My own custom js files, split up for ease of understanding and use -->
+  <!-- Minified -->
+  <!-- <script charset="utf-8" src="js/main.min.js"></script>
+  <script charset="utf-8" src="js/modals.min.js"></script>
+  <script charset="utf-8" src="js/utilities.min.js"></script>
+  <script charset="utf-8" src="js/data.min.js"></script> -->
+  <!-- Non-Minified -->
+  <script charset="utf-8" src="js/main.js"></script>
+  <script charset="utf-8" src="js/modals.js"></script>
+  <script charset="utf-8" src="js/utilities.js"></script>
+  <script charset="utf-8" src="js/data.js"></script>
+
+  <!-- chart.js is loaded at end -->
+
+  <!-- Google Fonts -->
+  <!-- <link href="https://fonts.googleapis.com/css?family=Do+Hyeon|Source+Sans+Pro" rel="stylesheet"> -->
+
+  <title>Carroll's Trading</title>
+</head>
+
+<body id="body" class="h-100">
+
+  <div class="header col-12">
+    <a href="javascript:void(0)">
+      <h3 class="main-heading inline-header">
+        Carroll's Trading Game
+      </h3>
+    </a>
+  </div>
+
+  <div class="main-content h-100">
+    <!-- <div class="progress">
+      <div id="day-progress" class="bg-success progress-bar progress-bar-striped progress-bar-animated" style="width: 100%">
+      </div>
+    </div> -->
+
+    <!-- <br> -->
+
+    <div class="row card-deck">
+
+      <div class="card col-lg-8 col-md-12" id="chartCard">
+        <div class="card-body" id="chartOuter">
+          <h5 class="inline-header" id="chartTitle">Portfolio Worth: <span class="inline-header" id="portfolioWorth"></span></h5>
+
+          <h5 class="inline-header float-r">Cash: <span class="inline-header" id="cashAmt"></span></h5>
+          <div id="chartContainer" class="graph-container">
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card col-lg-4 col-md-12">
+        <div class="card-body">
+          <div>
+            <h5>News/Alerts</h5>
+          </div>
+          <table class="news-feed">
+            <tbody id="newsArticleInsertPoint">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- <br> -->
+
+    <div class="row card-deck">
+
+      <div class="card col-lg-8 col-md-12">
+        <div class="card-body">
+          <h5 class="inline-header">Stocks - <span id="marketStatusIndicator"></span> </h5>
+          <!-- <br> -->
+          <h5 class="inline-header float-r" id="dataFetchStatus">Fetching <i class="fas fa-circle-notch fa-spin"></i></h5>
+
+          <br>
+          <br>
+
+          <div class="x-scroll">
+            <div class="table-container">
+              <table class="table-compact">
+                <thead>
+                  <tr>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th></th>
+                    <th>Shares</th>
+                    <th>Worth</th>
+                    <th>Buy</th>
+                    <th>Sell</th>
+                  </tr>
+                </thead>
+                <tbody id="stockInfoInsertPoint">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card col-lg-4 col-md-12">
+        <div class="card-body">
+          <h5>Upgrades/etc.</h5>
+        </div>
+      </div>
+
+
+    </div>
+    <!-- <h1><br><br><br>Here we go yo, here go yo, so whats the whats the whats the, scenario</h1> -->
+  </div>
+
+
+  <!-- Loader Element -->
+  <div id="loading">
+    <div id="loading-center">
+      <img id="loading-image" src="img/ajax-loader.gif" alt="Loading..." class="unselectable" draggable="false" (dragstart)="false;" />
+      <h4 id="loading-reason" class="unselectable"> </h4>
+    </div>
+  </div>
+
+  <!-- The Alert Modal -->
+  <div class="modal fade" id="modifiableModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title" id="modifiableModal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body" id=modifiableModal-body>
+          Modal body..
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <span id="modifiableModal-footer"></span>
+          <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- The Event Modal -->
+  <div class="modal fade" id="eventModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title" id="eventModal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div id="eventModal-body">
+            Modal body..
+          </div>
+          <br>
+          <div class="text-secondary align-right text-smaller">Source: <span id="eventModal-source"></span></div>
+          <h5><br>Summary:</h5>
+          <div id="eventModal-summary"></div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <span id="eventModal-footer"></span>
+          <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- <script charset="utf-8" src="js/chart.min.js"></script> -->
+  <script charset="utf-8" src="js/chart.js"></script>
+
+
+  <script type="text/javascript">
+    checkUser();
+    // main();
+    initTabletop();
+    document.getElementById("chartContainer").style.height = (($('#chartOuter').height() - $('#chartTitle').height() - 10) + "px");
+  </script>
+
+
+</body>
+
+</html>

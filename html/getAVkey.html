@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!-- JQuery & Popper - base libraries used in plugins-->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+</head>
+
+<body>
+  <div>
+    <!-- Key:
+    <div id="key">...</div> -->
+    <br><br>
+    <button id="genKey">Gen Key</button>
+    <br><br>
+    <div>KeyNum: <input type="text" id="keyNum"></div>
+  </div>
+
+  <div id="results"></div>
+
+
+
+  <script type="text/javascript">
+    var keyNum = 0
+
+    function create_post() {
+      if ($('#keyNum').val()) {
+        keyNum = Number($('#keyNum').val())
+        $('#keyNum').remove()
+      }
+
+
+      $.ajax({
+        url: "/create_post/", // the endpoint
+        type: "POST", // http method
+        data: {
+          first_text: "B",
+          last_text: "C",
+          occupation_text: "Student",
+          organization_text: "School",
+          email_text: "ben.carroll+alpha" + keyNum + "@student.tsc.nsw.edu.au"
+        }, // data sent with the post request
+        // handle a successful response
+        success: function(json) {
+          console.log(json.text); // log the returned json to the console
+          $('#results').html(json.text)
+          keyNum += 1
+        },
+        // handle a non-successful response
+        error: function(xhr, errmsg, err) {
+          $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
+            " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+          console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+      });
+    };
+
+    $('#genKey').click(function() {
+      // console.log("btn clicked")
+      create_post()
+    });
+  </script>
+</body>
+
+</html>
