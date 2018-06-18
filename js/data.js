@@ -79,7 +79,7 @@ class StockClass {
       if (this.__price == 0) {
         b = 5000
       }
-      var a = this.__lastFetch <= Date.now() + b
+      var a = this.__lastFetch <= Date.now() - b
       if (a) {
         // doLog(this.__stockCode + " - FP called.")
         this.__lastFetch = Date.now()
@@ -295,10 +295,12 @@ function loadSheetsData(data) {
 
   // Pick an API key
   keyList = data["keys"]["elements"]
+  k = keyList[Math.floor(Math.random() * keyList.length)]["key"]
   for (var s in stockData) {
     if (stockData.hasOwnProperty(s)) {
       s = stockData[s]
-      s.setKey(keyList[Math.floor(Math.random() * keyList.length)]["key"])
+      // s.setKey(keyList[Math.floor(Math.random() * keyList.length)]["key"])
+      s.setKey(k)
     }
   }
 
@@ -330,7 +332,7 @@ function loadNewAlphaData() {
       stockData[l[ind]].fetchPrice()
       ind++;
     }, (c))
-    c += 500
+    c += apiCallFreq
   }
   ind = 0
   // debugger;

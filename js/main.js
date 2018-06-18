@@ -12,7 +12,7 @@ var timeStarted = Date.now()
 var chartRendered = false;
 var stop = false
 var allowQueries = true;
-
+var apiCallFreq = 5000;
 
 var wallet = new class {
   constructor() {
@@ -216,7 +216,7 @@ function main() {
   }
 
   if (!initialDataLoaded) {
-    if (Date.now() - lastCheck >= 10000) {
+    if (Date.now() - lastCheck >= 30000) {
       if (dataUpdates != Object.keys(stockData).length && Object.keys(stockData).length != 0) {
         loadingAttempts++;
         doLog("Data fetch error #" + loadingAttempts + " - Retrying...");
