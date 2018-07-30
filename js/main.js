@@ -12,7 +12,7 @@ var timeStarted = Date.now()
 var chartRendered = false;
 var stop = false
 var allowQueries = true;
-var apiCallFreq = 5000;
+var apiCallFreq = 50;
 
 var wallet = new class {
   constructor() {

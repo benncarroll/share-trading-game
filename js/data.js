@@ -43,7 +43,7 @@ class StockClass {
     try {
       if (x == "") throw "Price was provided empty.";
       if (isNaN(x)) throw "Price provided was not a number.";
-      this.__price = Number(x);
+      this.__price = numberFormat(x);
     } catch (e) {
       doLog("StockClass error - " + e)
     }
@@ -121,7 +121,8 @@ class StockClass {
 
     // OFFLINE MODE
 
-    var obj = $.getJSON('data/' + this.name + '.json');
+    // var obj = $.getJSON('data/' + this.name + '.json')['responseJSON'];
+    var obj = dataTrove[this.name]
     this.__data = obj;
     var objKeys = Object.keys(obj["Time Series (1min)"])
     this.__price = (Number(obj["Time Series (1min)"][objKeys.sort()[objKeys.length - 1]]["4. close"]))
@@ -212,6 +213,7 @@ class EventClass {
     this.__modifierType = modifierType;
     this.__modifier = Number(modifier);
     this.__target = target;
+    this.__enacted = false;
     this.__recurring = eval(recurring);
     if (this.__recurring) {
       this.__interval = Number(recurringInterval);
@@ -260,8 +262,22 @@ class EventClass {
   }
 
   display() {
-    summonEventModal()
+    // console.log(this.__modifierType, this.__target);
+    if (!this.__enacted) {
+      if (this.__modifierType == "%") {
+        if (this.__target[0] == "-") {
+          var tg = this.__target.substring(1, 4)
+          // doLog(tg, stockData[tg].price, stockData[tg].price + stockData[tg].price * this.__modifier)
+          stockData[tg].setPrice(stockData[tg].price + stockData[tg].price * this.__modifier)
+          this.__enacted = true;
+        }
+      }
+      populateStockTable()
+    }
+
+    summonNewsArticle(this.__index)
   }
+
 
 }
 
@@ -477,7 +493,7 @@ function populateNewsTable() {
     if (eventsData.hasOwnProperty(article)) {
       article = eventsData[article]
 
-      constructedRow = "<tr><td class='w-max-75' rows=1>" + article.__title + "</td><td class='r-button'><a href='javascript:void(0)' onclick='summonNewsArticle(" + article.__index + ")'>View</a></td></tr>"
+      constructedRow = "<tr><td class='w-max-75' rows=1>" + article.__title + "</td><td class='r-button'><a href='javascript:void(0)' onclick='eventsData[" + article.__index + "].display()'>View</a></td></tr>"
 
       $("#newsArticleInsertPoint").append(constructedRow)
 
