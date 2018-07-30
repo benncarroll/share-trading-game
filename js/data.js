@@ -74,50 +74,59 @@ class StockClass {
   }
 
   fetchPrice(rl = false) {
-    if (this.__key != "") {
-      var b = this.__checkInterval
-      if (this.__price == 0) {
-        b = 5000
-      }
-      var a = this.__lastFetch <= Date.now() - b
-      if (a) {
-        // doLog(this.__stockCode + " - FP called.")
-        this.__lastFetch = Date.now()
+    // if (this.__key != "") {
+    //   var b = this.__checkInterval
+    //   if (this.__price == 0) {
+    //     b = 5000
+    //   }
+    //   var a = this.__lastFetch <= Date.now() - b
+    //   if (a) {
+    //     // doLog(this.__stockCode + " - FP called.")
+    //     this.__lastFetch = Date.now()
+    //
+    //     var av_query_url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + this.__stockCode + ".AX&interval=1min&apikey=" + this.__key;
+    //     var brokenObj = false;
+    //
+    //     var me = this;
+    //
+    //     if (allowQueries) {
+    //       $.get(av_query_url, function(loadedAlphaData) {
+    //
+    //         if (loadedAlphaData["Meta Data"] == undefined) {
+    //           brokenObj = true
+    //         }
+    //
+    //         if (!brokenObj && loadedAlphaData != undefined) {
+    //           // console.log("Hit");
+    //           var obj = loadedAlphaData;
+    //           me.__data = obj;
+    //           var objKeys = Object.keys(obj["Time Series (1min)"])
+    //           me.__price = (Number(obj["Time Series (1min)"][objKeys.sort()[objKeys.length - 1]]["4. close"]))
+    //           // doLog(`Set price of ${me.__stockCode} to ${me.__price}`)
+    //           dataUpdates += 1
+    //           this.__lastFetch = Date.now() + 50000
+    //           // debugger;
+    //
+    //         } else {
+    //           // dataUpdates -= 1
+    //           doLog("Failed - " + av_query_url)
+    //         }
+    //       });
+    //     }
+    //   }
+    //   if (rl) {
+    //     populateStockTable()
+    //   }
+    // }
 
-        var av_query_url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + this.__stockCode + ".AX&interval=1min&apikey=" + this.__key;
-        var brokenObj = false;
+    // OFFLINE MODE
 
-        var me = this;
+    var obj = $.getJSON('data/' + this.name + '.json');
+    this.__data = obj;
+    var objKeys = Object.keys(obj["Time Series (1min)"])
+    this.__price = (Number(obj["Time Series (1min)"][objKeys.sort()[objKeys.length - 1]]["4. close"]))
 
-        if (allowQueries) {
-          $.get(av_query_url, function(loadedAlphaData) {
-
-            if (loadedAlphaData["Meta Data"] == undefined) {
-              brokenObj = true
-            }
-
-            if (!brokenObj && loadedAlphaData != undefined) {
-              // console.log("Hit");
-              var obj = loadedAlphaData;
-              me.__data = obj;
-              var objKeys = Object.keys(obj["Time Series (1min)"])
-              me.__price = (Number(obj["Time Series (1min)"][objKeys.sort()[objKeys.length - 1]]["4. close"]))
-              // doLog(`Set price of ${me.__stockCode} to ${me.__price}`)
-              dataUpdates += 1
-              this.__lastFetch = Date.now() + 50000
-              // debugger;
-
-            } else {
-              // dataUpdates -= 1
-              doLog("Failed - " + av_query_url)
-            }
-          });
-        }
-      }
-      if (rl) {
-        populateStockTable()
-      }
-    }
+    populateStockTable()
   }
 
   tradeShares(amount, buySell) {
@@ -312,6 +321,7 @@ function loadSheetsData(data) {
 
   // Allow every thing to do its respective thing
   sheetsDataLoaded = true;
+  console.log(data);
   data = []
 
 }
@@ -588,7 +598,7 @@ function exportSaveData() {
 function importSaveData(f, d) {
   if (f == 0) {
     c = `Here is where you can import data from a previous game. Paste your exported data from another browser into the box below and click 'Load'.`
-    summonModal("Import Data", c , true, "Load")
+    summonModal("Import Data", c, true, "Load")
   } else if (f == 1) {
     console.log(f, d);
     d2 = JSON.parse(Base64.decode(d))
